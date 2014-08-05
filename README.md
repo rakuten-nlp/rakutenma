@@ -13,6 +13,10 @@ Rakuten MA has the following unique features:
   - Supports feature hashing, quantization, and pruning for compact model representation.
   - Bundled with Chinese and Japanese models trained from general corpora (CTB [Xue et al. 2005] and BCCWJ [Maekawa 2008]) and E-commerce corpora.
 
+## Demo
+
+You can try Rakuten MA on [the demo page](http://rakuten-nlp.github.io/rakutenma/). (It may take a while to load this page.)
+
 ## Usage
 
 ### Download & Install
