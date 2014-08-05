@@ -1,0 +1,68 @@
+<html>
+  <head>
+    <title>Rakuten MA Demo Page</title>
+    <script type="text/javascript" src="rakutenma.js" charset="UTF-8"></script>
+    <script type="text/javascript" src="train/rcorpus.js" charset="UTF-8"></script>
+    <script type="text/javascript" src="model_ja.js" charset="UTF-8"></script>
+    <script type="text/javascript" src="model_zh.js" charset="UTF-8"></script>
+    <script type="text/javascript" src="zh_chardic.js" charset="UTF-8"></script>
+
+    <script type="text/javascript" src="hanzenkaku.js" charset="UTF-8"></script>
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <script type="text/javascript" charset="UTF-8">
+      function Segment() {
+
+      rma_ja = new RakutenMA(model_ja);
+      rma_ja.featset = RakutenMA.default_featset_ja;
+      rma_ja.hash_func = RakutenMA.create_hash_func(15);
+
+
+      rma_zh = new RakutenMA(model_zh);
+      rma_zh.featset = RakutenMA.default_featset_zh;
+      rma_zh.hash_func = RakutenMA.create_hash_func(15);
+      rma_zh.ctype_func = RakutenMA.create_ctype_chardic_func(chardic);
+
+      var textarea = document.getElementById("input");
+      var result = document.getElementById("output");
+      var langs = document.getElementsByName("lang");
+
+      var tokens;
+      if (langs[0].checked) // Chinese
+        tokens = rma_zh.tokenize(HanZenKaku.hs2fs(HanZenKaku.hw2fw(HanZenKaku.h2z(textarea.value))));
+      else if (langs[1].checked) // Japanese
+        tokens = rma_ja.tokenize(HanZenKaku.hs2fs(HanZenKaku.hw2fw(HanZenKaku.h2z(textarea.value))));
+
+      result.style.display = 'block';
+      if (tokens)
+        result.innerHTML = RakutenMA.tokens2string(tokens);
+      }
+
+    </script>
+  </head>
+  <body>
+    <div class="container">
+      <h1><a href=".">Rakuten MA Demo Page</a></h1>
+
+        <h2>Introduction</h2>
+        Rakuten MA (morphological analyzer) is a morphological analyzer (word segmentor + PoS Tagger) for Chinese and Japanese.
+        Since it's entirely written in JavaScript, you can try morphological analysis without server connection.
+        For the detail, please visit our <a href="https://github.com/rakuten-nlp/rakutenma">GitHub repository page</a>.
+
+        <h2>Demo</h2>
+        <p>Input Chinese or Japanese text here, choose the language, then press "Analyze":</p>
+        <p>Example: Chinese: 我把我的成功归功于他。(from <a href="http://tatoeba.org/jpn/sentences/show/881834">Tatoeba:881834</a>) <br/>
+          Japanese: 彼は新しい仕事できっと成功するだろう。 (from <a href="http://tatoeba.org/jpn/sentences/show/103809">Tatoeba:103809</a>)</p>
+        <textarea id="input" cols="80" rows="5"></textarea>
+        <p>
+          <input type="radio"  id="lang_zh" name="lang" value="zh"/> <label for="lang_zh">Chinese</label>
+          <input type="radio"  id="lang_ja" name="lang" value="ja"/> <label for="lang_ja">Japanese</label>
+          <input type="submit" value="Analyze" onclick="Segment()">
+        </p>
+        <p>The analysis result will be shown below:</p>
+      <pre id="output"></pre>
+      <hr/>
+      © 2014 Rakuten NLP Project All Rights Reserved.
+    </div>
+  </body>
+
+</html>
