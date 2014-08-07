@@ -329,7 +329,7 @@ Q. Can we use the same model file in the JSON format for browsers?
 
 ## Acknowledgements
 
-The developers would like to thank Satshi Sekine, Satoko Marumoto, Yoichi Yoshimoto, Keiji Shinzato, Keita Yaegashi, and Soh Masuko for
+The developers would like to thank Satoshi Sekine, Satoko Marumoto, Yoichi Yoshimoto, Keiji Shinzato, Keita Yaegashi, and Soh Masuko for
 their contribution to this project.
 
 ## References
