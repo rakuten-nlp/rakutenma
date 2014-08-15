@@ -1,0 +1,30 @@
+{
+  "name": "rakutenma",
+  "version": "1.0.0",
+  "description": "Rakuten MA - morphological analyzer (word segmentation + PoS Tagger) for Chinese and Japanese written purely in JavaScript.",
+  "main": "rakutenma.js",
+  "scripts": {
+    "test": "jasmine-node spec"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rakuten-nlp/rakutenma.git"
+  },
+  "keywords": [
+    "natural language processing",
+    "NLP",
+    "morphological analysis",
+    "word segmentation",
+    "PoS tagging",
+    "text mining",
+    "Chinese",
+    "Japanese",
+    "machine learning"
+  ],
+  "author": "rakuten-nlp",
+  "license": "Apache License version 2.0",
+  "bugs": {
+    "url": "https://github.com/rakuten-nlp/rakutenma/issues"
+  },
+  "homepage": "https://github.com/rakuten-nlp/rakutenma"
+}

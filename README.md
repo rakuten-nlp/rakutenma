@@ -33,6 +33,14 @@ If you have Node.js installed, you can run the demo by
 
 which is identical to the usage example below.
 
+### npm package
+
+You can also use Rakuten MA as an npm package. You can install it by:
+
+    npm install rakutenma
+
+The model files can be found under `node_modules/rakutenma/`.
+
 ### Usage Example (on Node.js)
 
     // RakutenMA demo
@@ -197,6 +205,7 @@ Q. Is commercial use permitted?
 Q. I found a bug / analysis error / etc. Where should I report?
 - A. Please create an issue at Github issues https://github.com/rakuten-nlp/rakutenma/issues.
 - Alternatively, you can create a pull request if you modify the code. Rakuten MA has a test suite using Jasmine http://jasmine.github.io/. Please make sure all the tests pass (no errors after running `jasmine-node spec`) and write your own (if necessary) before submitting a pull request.
+- Finally, if your question is still not solved, please contact us at prj-rakutenma [at] mail.rakuten.com.
 
 Q. Tokenization results look strange (specifically, the sentence is split up to individual characters with no PoS tags)
 - A. Check if you are using the same feature set (`featset`) and the feature hashing function (`hash_func`) used for training. Remember to use 15-bit feature hashing function (`rma.hash_func = RakutenMA.create_hash_func(15);`) when using the bundled models (`model_zh.json` and `model_ja.json`).
@@ -334,15 +343,15 @@ their contribution to this project.
 
 ## References
 
-Masato Hagiwara and Satoshi Sekine. Lightweight Client-Side Chinese/Japanese Morphological Analyzer Based on Online Learning. COLING 2014.
+Masato Hagiwara and Satoshi Sekine. Lightweight Client-Side Chinese/Japanese Morphological Analyzer Based on Online Learning. COLING 2014 Demo Session, pages 39-43, 2014. [[PDF](http://anthology.aclweb.org/C/C14/C14-2009.pdf)]
 
-Kikuo Maekawa. 2008. Compilation of the Kotonoha-BCCWJ corpus (in Japanese). Nihongo no kenkyu (Studies in Japanese), 4(1):82–95.
+Kikuo Maekawa. Compilation of the Kotonoha-BCCWJ corpus (in Japanese). Nihongo no kenkyu (Studies in Japanese), 4(1):82–95, 2008.
 (Some English information can be found [here](http://www2.ninjal.ac.jp/kikuo/Yonsei_KM20070129.pdf).) [[Site](http://www.ninjal.ac.jp/corpus_center/bccwj/)]
 
-Jialei Wang, Peilin Zhao, and Steven C. Hoi. 2012. Exact soft confidence-weighted learning. In Proc. of ICML 2012, pages 121–128. [[PDF](http://icml.cc/2012/papers/86.pdf)] [[Site](https://catalog.ldc.upenn.edu/LDC2010T07)]
+Jialei Wang, Peilin Zhao, and Steven C. Hoi. Exact soft confidence-weighted learning. In Proc. of ICML 2012, pages 121–128, 2012. [[PDF](http://icml.cc/2012/papers/86.pdf)] [[Site](https://catalog.ldc.upenn.edu/LDC2010T07)]
 
-Naiwen Xue, Fei Xia, Fu-dong Chiou, and Marta Palmer. 2005. The Penn Chinese treebank: Phrase structure
-annotation of a large corpus. Natural Language Engineering, 11(2):207–238. [[PDF](http://verbs.colorado.edu/~mpalmer/papers/ctb.pdf)]
+Naiwen Xue, Fei Xia, Fu-dong Chiou, and Marta Palmer. The Penn Chinese treebank: Phrase structure
+annotation of a large corpus. Natural Language Engineering, 11(2):207–238, 2005. [[PDF](http://verbs.colorado.edu/~mpalmer/papers/ctb.pdf)]
 
 ---
 
