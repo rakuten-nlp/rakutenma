@@ -317,7 +317,7 @@ Q. Can we use the same model file in the JSON format for browsers?
 | N-pn | 名詞-固有名詞      | Noun-Proper Noun |
 | N-xs | 名詞-助動詞語幹    | Noun-AuxVerb stem |
 | O    | その他            | Others            |
-| P    | 助詞              | Particle |
+| P    | 接頭辞             | Prefix |
 | P-fj | 助詞-副助詞        | Particle-Adverbial |
 | P-jj | 助詞-準体助詞      | Particle-Phrasal |
 | P-k  | 助詞-格助詞        | Particle-Case Marking |
@@ -348,10 +348,10 @@ Masato Hagiwara and Satoshi Sekine. Lightweight Client-Side Chinese/Japanese Mor
 Kikuo Maekawa. Compilation of the Kotonoha-BCCWJ corpus (in Japanese). Nihongo no kenkyu (Studies in Japanese), 4(1):82–95, 2008.
 (Some English information can be found [here](http://www2.ninjal.ac.jp/kikuo/Yonsei_KM20070129.pdf).) [[Site](http://www.ninjal.ac.jp/corpus_center/bccwj/)]
 
-Jialei Wang, Peilin Zhao, and Steven C. Hoi. Exact soft confidence-weighted learning. In Proc. of ICML 2012, pages 121–128, 2012. [[PDF](http://icml.cc/2012/papers/86.pdf)] [[Site](https://catalog.ldc.upenn.edu/LDC2010T07)]
+Jialei Wang, Peilin Zhao, and Steven C. Hoi. Exact soft confidence-weighted learning. In Proc. of ICML 2012, pages 121–128, 2012. [[PDF](http://icml.cc/2012/papers/86.pdf)]
 
 Naiwen Xue, Fei Xia, Fu-dong Chiou, and Marta Palmer. The Penn Chinese treebank: Phrase structure
-annotation of a large corpus. Natural Language Engineering, 11(2):207–238, 2005. [[PDF](http://verbs.colorado.edu/~mpalmer/papers/ctb.pdf)]
+annotation of a large corpus. Natural Language Engineering, 11(2):207–238, 2005. [[PDF](http://verbs.colorado.edu/~mpalmer/papers/ctb.pdf)] [[Site](https://catalog.ldc.upenn.edu/LDC2010T07)]
 
 ---
 
