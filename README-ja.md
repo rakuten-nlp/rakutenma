@@ -5,19 +5,20 @@
 ## はじめに
 
 Rakuten MA (mophological analyzer; 形態素解析器) は、100% JavaScript で書かれた、日本語・中国語用の形態素解析（単語の分かち書き＋品詞付与）ツールです。
+
 注：分かち書き、品詞、原形付与を総称して形態素解析と呼び、Rakuten MA は正確には形態素解析ではありませんが、日本語圏における分かりやすさを優先してこの名称を使っています。
 
-Rakuten MA has the following unique features:
-  - Pure JavaScript implementation. Works both on modern browsers and node.js.
-  - Implements a language independent character tagging model. Outputs word segmentation and PoS tags for Chinese/Japanese.
-  - Supports incremental update of models by online learning (Soft Confidence Weighted, Wang et al. ICML 2012).
-  - Customizable feature set.
-  - Supports feature hashing, quantization, and pruning for compact model representation.
-  - Bundled with Chinese and Japanese models trained from general corpora (CTB [Xue et al. 2005] and BCCWJ [Maekawa 2008]) and E-commerce corpora.
+Rakuten MA には、以下のような特徴があります：
+  - 100% JavaScript による実装。ほとんどのブラウザや Node.js 上で動きます。
+  - 言語非依存の文字タギングモデルを採用。日本語・中国語の単語の分かち書きおよび品詞付与ができます。
+  - オンライン機械学習  (Soft Confidence Weighted, Wang et al. ICML 2012) を使い、解析モデルの差分アップデートが可能。
+  - 素性セットのカスタマイズが可能。
+  - モデルサイズ削減のため、素性ハッシング、量子化、フィルタリングをサポート。
+  - 一般分野のコーパス (BCCWJ [Maekawa 2008] と CTB [Xue et al. 2005]) およびネットショッピング分野のコーパスから学習したモデルを同梱。
 
 ## デモ
 
-You can try Rakuten MA on [the demo page](http://rakuten-nlp.github.io/rakutenma/). (It may take a while to load this page.)
+[こちらのページ](http://rakuten-nlp.github.io/rakutenma/) から、Rakuten MA のデモを試すことができます。 (ロードに少し時間がかかります)
 
 ## 使い方
 
@@ -43,44 +44,44 @@ You can also use Rakuten MA as an npm package. You can install it by:
 
 The model files can be found under `node_modules/rakutenma/`.
 
-### Usage Example (on Node.js)
+### Node.js における使用例
 
-    // RakutenMA demo
+    // RakutenMA デモ
 
-    // Load necessary libraries
+    // 必要なライブラリをロード
     var RakutenMA = require('./rakutenma');
     var fs = require('fs');
 
-    // Initialize a RakutenMA instance
-    // with an empty model and the default ja feature set
+    // RakutenMA のインスタンスを初期化
+    // (空のモデルと、日本語のデフォルト素性セットを使用)
     var rma = new RakutenMA();
     rma.featset = RakutenMA.default_featset_ja;
 
-    // Let's analyze a sample sentence (from http://tatoeba.org/jpn/sentences/show/103809)
-    // With a disastrous result, since the model is empty!
+    // サンプル文を解析 (from http://tatoeba.org/jpn/sentences/show/103809)
+    // → モデルが空のため、正確な分かち書きができない
     console.log(rma.tokenize("彼は新しい仕事できっと成功するだろう。"));
 
-    // Feed the model with ten sample sentences from tatoeba.com
+    // tatoeba.com から10文をモデルに与えて学習
     var tatoeba = JSON.parse(fs.readFileSync("tatoeba.json"));
     for (var i = 0; i < 10; i ++) {
         rma.train_one(tatoeba[i]);
     }
 
-    // Now what does the result look like?
+    // 再度解析 → 結果が少し改善
     console.log(rma.tokenize("彼は新しい仕事できっと成功するだろう。"));
 
-    // Initialize a RakutenMA instance with a pre-trained model
+    // RakutenMA インスタンスを、学習済みモデルを使って初期化
     var model = JSON.parse(fs.readFileSync("model_ja.json"));
-    rma = new RakutenMA(model, 1024, 0.007812);  // Specify hyperparameter for SCW (for demonstration purpose)
+    rma = new RakutenMA(model, 1024, 0.007812);  // SCW のハイパーパラメータを指定
     rma.featset = RakutenMA.default_featset_ja;
 
-    // Set the feature hash function (15bit)
+    // 素性ハッシング関数 (15bit) を指定
     rma.hash_func = RakutenMA.create_hash_func(15);
 
-    // Tokenize one sample sentence
+    // サンプル文を解析
     console.log(rma.tokenize("うらにわにはにわにわとりがいる"));
 
-    // Re-train the model feeding the right answer (pairs of [token, PoS tag])
+    // 望む解析結果 ([トークン, 品詞タグ]の列) を与えて再学習
     var res = rma.train_one(
             [["うらにわ","N-nc"],
              ["に","P-k"],
@@ -89,16 +90,16 @@ The model files can be found under `node_modules/rakutenma/`.
              ["にわとり","N-nc"],
              ["が","P-k"],
              ["いる","V-c"]]);
-    // The result of train_one contains:
-    //   sys: the system output (using the current model)
-    //   ans: answer fed by the user
-    //   update: whether the model was updated
+    // train_one() の戻り値には、以下が含まれる：
+    //   sys: 現在のモデルに基づくシステムの出力
+    //   ans: ユーザのあたえた正解
+    //   update: モデルが更新されたかどうかのフラグ
     console.log(res);
 
-    // Now what does the result look like?
+    // 再度解析
     console.log(rma.tokenize("うらにわにはにわにわとりがいる"));
 
-### ブラウザ上での使用法
+### ブラウザ上での使用例
 
 Include the following code snippet in the `<head>` of your HTML.
 
@@ -129,14 +130,14 @@ The analysis and result looks like this:
     <div id="output"></div>
 
 
-### Using bundled models to analyze Chinese/Japanese sentences
+### 学習済みモデルを使って日本語・中国語の文を解析
 
 1. Load an existing model, e.g., `model = JSON.parse(fs.readFileSync("model_file"));` then `rma = new RakutenMA(model);` or `rma.set_model(model);`
 2. Specify `featset` depending on your langage (e.g., `rma.featset = RakutenMA.default_featset_zh;` for Chinese and `rma.featset = RakutenMA.default_featset_ja;` for Japanese).
 3. Remember to use 15-bit feature hashing function (`rma.hash_func = RakutenMA.create_hash_func(15);`) when using the bundled models (`model_zh.json` and `model_ja.json`).
 4. Use `rma.tokenize(input)` to analyze your input.
 
-### Training your own analysis model from scratch
+### オリジナルの解析モデルの学習
 
 1. Prepare your training corpus (a set of training sentences where a sentence is just an array of correct [token, PoS tag].)
 2. Initialize a RakutenMA instance with `new RakutenMA()`.
@@ -146,13 +147,13 @@ The analysis and result looks like this:
 
 See `scripts/train_zh.js` (for Chinese) and `scripts/train_ja.js` (for Japanese) to see an example showing how to train your own model.
 
-### Re-training an existing model (domain adaptation, fixing errors, etc.)
+### 学習済みモデルの再学習 (分野適応、エラー修正等)
 
 1. Load an existing model and initialize a RakutenMA instance. (see "Using bundled models to analyze Chinese/Japanese sentences" above)
 2. Prepare your training data (this could be as few as a couple of sentences, depending on what and how much you want to "re-train".)
 3. Feed your training sentences one by one to the `train_one(sent)` method.
 
-### Reducing the model size
+### モデルサイズの削減
 
 The model size could still be a problem for client-side distribution even after applying feature hashing.
 We included a script `scripts/minify.js` which applies feature quantization
@@ -161,7 +162,7 @@ We included a script `scripts/minify.js` which applies feature quantization
 You can run it `node scripts/minify.js [input_model_file] [output_model_file]` to make a minified version of the model file.
 *Remember:* it also deletes the "sigma" part of the trained model, meaning that you are no longer able to re-train the minified model. If necessary, re-train the model first, then minify it.
 
-## API Documentation
+## API ドキュメント
 
 | Constructor                 | Description                                 |
 | ----------------------------| ------------------------------------------- |
@@ -182,7 +183,7 @@ You can run it `node scripts/minify.js [input_model_file] [output_model_file]` t
 | `hash_func`                 | Specifies the hash function to use for feature hashing. Default = `undefined` (no feature hashing). A feature hashing function with `bit`-bit hash space can be created by calling `RakutenMA.create_hash_func(bit)`. |
 
 
-## Terms and Conditions
+## 利用規約・ライセンス
 
 Distribution, modification, and academic/commercial use of Rakuten MA is permitted, provided that
 you conform with Apache License version 2.0 http://www.apache.org/licenses/LICENSE-2.0.html.
@@ -190,7 +191,7 @@ you conform with Apache License version 2.0 http://www.apache.org/licenses/LICEN
 If you are using Rakuten MA for research purposes, please cite our paper on Rakuten MA [Hagiwara and Sekine 2014]
 
 
-## FAQ (Frequently Asked Questions)
+## よくある質問
 
 Q. What are supported browsers and Node.js versions?
 
@@ -218,9 +219,9 @@ Q. What scripts (Simplified/Traditional) are supported for Chinese?
 Q. Can we use the same model file in the JSON format for browsers?
 - A. Yes and no. Although internal data structure of models is the same, you need to add assignment (e.g., `var model = [JSON representation];`) in order to refer to it on browsers. See the difference between `model_zh.json` (for Node.js) and `model_zh.js` (for browsers). There is a mini script `scripts/convert_for_browser.js` which does this for you. We recommend you work on Node.js for model training etc. and then convert it for browser uses.
 
-## Appendix
+## 付録
 
-### Supported feature templates
+### 対応している素性テンプレート
 
 | Feature template | Description                   |
 | ---------------- | ----------------------------- |
@@ -338,12 +339,12 @@ Q. Can we use the same model file in the JSON format for browsers?
 | W    | 空白              | Whitespace |
 | X    | 助動詞            | AuxVerb |
 
-## Acknowledgements
+## 謝辞
 
 The developers would like to thank Satoshi Sekine, Satoko Marumoto, Yoichi Yoshimoto, Keiji Shinzato, Keita Yaegashi, and Soh Masuko for
 their contribution to this project.
 
-## References
+## 参考文献
 
 Masato Hagiwara and Satoshi Sekine. Lightweight Client-Side Chinese/Japanese Morphological Analyzer Based on Online Learning. COLING 2014 Demo Session, pages 39-43, 2014. [[PDF](http://anthology.aclweb.org/C/C14/C14-2009.pdf)]
 
