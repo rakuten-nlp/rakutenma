@@ -1,11 +1,11 @@
 # Rakuten MA
 
-[Japanese README (日本語ドキュメント)](https://github.com/rakuten-nlp/rakutenma/blob/master/README-ja.md)
+[English README (英語ドキュメント)](https://github.com/rakuten-nlp/rakutenma/blob/master/README.md)
 
-## Introduction
+## はじめに
 
-Rakuten MA (morphological analyzer) is a morphological analyzer (word segmentor + PoS Tagger)
-for Chinese and Japanese written purely in JavaScript.
+Rakuten MA (mophological analyzer; 形態素解析器) は、100% JavaScript で書かれた、日本語・中国語用の形態素解析（単語の分かち書き＋品詞付与）ツールです。
+注：分かち書き、品詞、原形付与を総称して形態素解析と呼び、Rakuten MA は正確には形態素解析ではありませんが、日本語圏における分かりやすさを優先してこの名称を使っています。
 
 Rakuten MA has the following unique features:
   - Pure JavaScript implementation. Works both on modern browsers and node.js.
@@ -15,13 +15,13 @@ Rakuten MA has the following unique features:
   - Supports feature hashing, quantization, and pruning for compact model representation.
   - Bundled with Chinese and Japanese models trained from general corpora (CTB [Xue et al. 2005] and BCCWJ [Maekawa 2008]) and E-commerce corpora.
 
-## Demo
+## デモ
 
 You can try Rakuten MA on [the demo page](http://rakuten-nlp.github.io/rakutenma/). (It may take a while to load this page.)
 
-## Usage
+## 使い方
 
-### Download & Install
+### ダウンロードとインストール
 
 Since Rakuten MA is a JavaScript library, there's no need for installation. Clone the git repository as
 
@@ -35,7 +35,7 @@ If you have Node.js installed, you can run the demo by
 
 which is identical to the usage example below.
 
-### npm package
+### npm パッケージ
 
 You can also use Rakuten MA as an npm package. You can install it by:
 
@@ -98,7 +98,7 @@ The model files can be found under `node_modules/rakutenma/`.
     // Now what does the result look like?
     console.log(rma.tokenize("うらにわにはにわにわとりがいる"));
 
-### Usage Example (on browsers)
+### ブラウザ上での使用法
 
 Include the following code snippet in the `<head>` of your HTML.
 
