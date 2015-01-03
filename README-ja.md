@@ -6,11 +6,11 @@
 
 Rakuten MA (mophological analyzer; 形態素解析器) は、100% JavaScript で書かれた、日本語・中国語用の形態素解析（単語の分かち書き＋品詞付与）ツールです。
 
-注：分かち書き、品詞、原形付与を総称して形態素解析と呼び、Rakuten MA は正確には形態素解析ではありませんが、日本語圏における分かりやすさを優先してこの名称を使っています。
+注：分かち書き、品詞、原形付与を総称して形態素解析と呼ぶため、Rakuten MA は正確には形態素解析器ではありませんが、日本語圏における分かりやすさを優先してこの名称を使っています。
 
 Rakuten MA には、以下のような特徴があります：
   - 100% JavaScript による実装。ほとんどのブラウザや Node.js 上で動きます。
-  - 言語非依存の文字タギングモデルを採用。日本語・中国語の単語の分かち書きおよび品詞付与ができます。
+  - 言語非依存の文字単位タグ付けモデルを採用。日本語・中国語の単語の分かち書きおよび品詞付与ができます。
   - オンライン機械学習  (Soft Confidence Weighted, Wang et al. ICML 2012) を使い、解析モデルの差分アップデートが可能。
   - 素性セットのカスタマイズが可能。
   - モデルサイズ削減のため、素性ハッシング、量子化、フィルタリングをサポート。
@@ -18,31 +18,29 @@ Rakuten MA には、以下のような特徴があります：
 
 ## デモ
 
-[こちらのページ](http://rakuten-nlp.github.io/rakutenma/) から、Rakuten MA のデモを試すことができます。 (ロードに少し時間がかかります)
+[こちらのページ](http://rakuten-nlp.github.io/rakutenma/) から、Rakuten MA のデモを試すことができます。 (読み込みに少し時間がかかります)
 
 ## 使い方
 
 ### ダウンロードとインストール
 
-Since Rakuten MA is a JavaScript library, there's no need for installation. Clone the git repository as
+Rakuten MA は JavaScript のライブラリなため、インストールの必要はありません。以下のように、Git リポジトリをクローンするか、
 
     git clone https://github.com/rakuten-nlp/rakutenma.git
 
-or download the zip archive from here: https://github.com/rakuten-nlp/rakutenma/archive/master.zip
+zip アーカイブを以下からダウンロードしてください。 https://github.com/rakuten-nlp/rakutenma/archive/master.zip
 
-If you have Node.js installed, you can run the demo by
+Node.js がインストールされていれば、以下のコマンドでデモを動かすことができます（内容は以下の使用例と同じです）
 
     node demo.js
 
-which is identical to the usage example below.
-
 ### npm パッケージ
 
-You can also use Rakuten MA as an npm package. You can install it by:
+Rakuten MA を npm パッケージとして使うこともできます。以下のコマンドでインストールできます。
 
     npm install rakutenma
 
-The model files can be found under `node_modules/rakutenma/`.
+モデルファイルは、`node_modules/rakutenma/` に格納されています。
 
 ### Node.js における使用例
 
@@ -52,13 +50,13 @@ The model files can be found under `node_modules/rakutenma/`.
     var RakutenMA = require('./rakutenma');
     var fs = require('fs');
 
-    // RakutenMA のインスタンスを初期化
+    // Rakuten MA のインスタンスを初期化
     // (空のモデルと、日本語のデフォルト素性セットを使用)
     var rma = new RakutenMA();
     rma.featset = RakutenMA.default_featset_ja;
 
     // サンプル文を解析 (from http://tatoeba.org/jpn/sentences/show/103809)
-    // → モデルが空のため、正確な分かち書きができない
+    // → モデルが空のため、文字がバラバラになってしまい、正確な分かち書きができない
     console.log(rma.tokenize("彼は新しい仕事できっと成功するだろう。"));
 
     // tatoeba.com から10文をモデルに与えて学習
@@ -70,7 +68,7 @@ The model files can be found under `node_modules/rakutenma/`.
     // 再度解析 → 結果が少し改善
     console.log(rma.tokenize("彼は新しい仕事できっと成功するだろう。"));
 
-    // RakutenMA インスタンスを、学習済みモデルを使って初期化
+    // Rakuten MA インスタンスを、学習済みモデルを使って初期化
     var model = JSON.parse(fs.readFileSync("model_ja.json"));
     rma = new RakutenMA(model, 1024, 0.007812);  // SCW のハイパーパラメータを指定
     rma.featset = RakutenMA.default_featset_ja;
@@ -90,18 +88,18 @@ The model files can be found under `node_modules/rakutenma/`.
              ["にわとり","N-nc"],
              ["が","P-k"],
              ["いる","V-c"]]);
-    // train_one() の戻り値には、以下が含まれる：
+    // train_one() の戻り値の中身：
     //   sys: 現在のモデルに基づくシステムの出力
     //   ans: ユーザのあたえた正解
     //   update: モデルが更新されたかどうかのフラグ
     console.log(res);
 
-    // 再度解析
+    // 再度解析 → 今度は解析結果が完璧に！
     console.log(rma.tokenize("うらにわにはにわにわとりがいる"));
 
 ### ブラウザ上での使用例
 
-Include the following code snippet in the `<head>` of your HTML.
+以下のコードを、HTML の `<head>` の中に埋め込んでください。
 
     <script type="text/javascript" src="rakutenma.js" charset="UTF-8"></script>
     <script type="text/javascript" src="model_ja.js" charset="UTF-8"></script>
@@ -123,7 +121,7 @@ Include the following code snippet in the `<head>` of your HTML.
 
     </script>
 
-The analysis and result looks like this:
+解析および結果を表示する部分は以下のようになります：
 
     <textarea id="input" cols="80" rows="5"></textarea>
     <input type="submit" value="Analyze" onclick="Segment()">
@@ -132,10 +130,10 @@ The analysis and result looks like this:
 
 ### 学習済みモデルを使って日本語・中国語の文を解析
 
-1. Load an existing model, e.g., `model = JSON.parse(fs.readFileSync("model_file"));` then `rma = new RakutenMA(model);` or `rma.set_model(model);`
-2. Specify `featset` depending on your langage (e.g., `rma.featset = RakutenMA.default_featset_zh;` for Chinese and `rma.featset = RakutenMA.default_featset_ja;` for Japanese).
-3. Remember to use 15-bit feature hashing function (`rma.hash_func = RakutenMA.create_hash_func(15);`) when using the bundled models (`model_zh.json` and `model_ja.json`).
-4. Use `rma.tokenize(input)` to analyze your input.
+1. 以下のように、学習済みモデルをロード `model = JSON.parse(fs.readFileSync("model_file"));` し、 `rma = new RakutenMA(model);` もしくは `rma.set_model(model);` としてモデルをセット。
+2. `featset` を言語に応じて設定 (例：日本語の場合、`rma.featset = RakutenMA.default_featset_ja;` 中国語の場合、`rma.featset = RakutenMA.default_featset_zh;`)
+3. 同梱モデル (`model_zh.json` や `model_ja.json`) を使用する場合、15ビットの素性ハッシュング関数をセットすることを忘れずに (`rma.hash_func = RakutenMA.create_hash_func(15);`)
+4. `rma.tokenize(input)` を使って、入力文を解析。
 
 ### オリジナルの解析モデルの学習
 
