@@ -88,9 +88,9 @@ Rakuten MA を npm パッケージとして使うこともできます。以下�
              ["にわとり","N-nc"],
              ["が","P-k"],
              ["いる","V-c"]]);
-    // train_one() の戻り値の中身：
+    // train_one() の戻り値のプロパティ：
     //   sys: 現在のモデルに基づくシステムの出力
-    //   ans: ユーザのあたえた正解
+    //   ans: ユーザの与えた正解
     //   update: モデルが更新されたかどうかのフラグ
     console.log(res);
 
@@ -130,64 +130,62 @@ Rakuten MA を npm パッケージとして使うこともできます。以下�
 
 ### 学習済みモデルを使って日本語・中国語の文を解析
 
-1. 以下のように、学習済みモデルをロード `model = JSON.parse(fs.readFileSync("model_file"));` し、 `rma = new RakutenMA(model);` もしくは `rma.set_model(model);` としてモデルをセット。
-2. `featset` を言語に応じて設定 (例：日本語の場合、`rma.featset = RakutenMA.default_featset_ja;` 中国語の場合、`rma.featset = RakutenMA.default_featset_zh;`)
-3. 同梱モデル (`model_zh.json` や `model_ja.json`) を使用する場合、15ビットの素性ハッシュング関数をセットすることを忘れずに (`rma.hash_func = RakutenMA.create_hash_func(15);`)
-4. `rma.tokenize(input)` を使って、入力文を解析。
+1. 以下のように、学習済みモデルをロード `model = JSON.parse(fs.readFileSync("model_file"));` し、 `rma = new RakutenMA(model);` もしくは `rma.set_model(model);` としてモデルをセットします。
+2. `featset` を言語に応じて設定します (例：日本語の場合、`rma.featset = RakutenMA.default_featset_ja;` 中国語の場合、`rma.featset = RakutenMA.default_featset_zh;`)
+3. 同梱モデル (`model_zh.json` や `model_ja.json`) を使用する場合、15ビットの素性ハッシング関数をセットすることを忘れずに (`rma.hash_func = RakutenMA.create_hash_func(15);`)
+4. `rma.tokenize(input)` を使って、入力文を解析します。
 
 ### オリジナルの解析モデルの学習
 
-1. Prepare your training corpus (a set of training sentences where a sentence is just an array of correct [token, PoS tag].)
-2. Initialize a RakutenMA instance with `new RakutenMA()`.
-3. Specify `featset`. (and optionally, `ctype_func`, `hash_func`, etc.)
-4. Feed your training sentences one by one (from the first one to the last) to the `train_one(sent)` method.
-5. Usually SCW converges enough after one `epoch` (one pass through the entire training corpus) but you can repeat Step 4. to achieve even better performance.
+1. 学習用コーパス ([トークン, 品詞タグ]の配列からなる学習用の文の配列) を準備します。
+2. `new RakutenMA()` として Rakuten MA のインスタンスを初期化します。
+3. `featset`を (必要に応じて、`ctype_func`, `hash_func`, 等も) セットします。
+4. `train_one()` メソッドに、学習用の文を一つずつ与えます。
+5. SCW は、通常１エポック（学習コーパスの文を最初から最後まで与えてモデルを学習する繰り返し１回分）後には収束します。ステップ4をさらにもう２，３エポック繰り返すことにより、さらに精度が上がる可能性があります。
 
-See `scripts/train_zh.js` (for Chinese) and `scripts/train_ja.js` (for Japanese) to see an example showing how to train your own model.
+オリジナルの解析モデルを学習する場合のサンプルが、`scripts/train_ja.js` (日本語) と `scripts/train_zh.js` (中国語) にありますので、ご参照ください。
 
 ### 学習済みモデルの再学習 (分野適応、エラー修正等)
 
-1. Load an existing model and initialize a RakutenMA instance. (see "Using bundled models to analyze Chinese/Japanese sentences" above)
-2. Prepare your training data (this could be as few as a couple of sentences, depending on what and how much you want to "re-train".)
-3. Feed your training sentences one by one to the `train_one(sent)` method.
+1. 学習済みモデルをロードし、Rakuten MA のインスタンスを初期化します。(上記の「学習済みモデルを使って日本語・中国語の文を解析」を参照)
+2. 学習用のデータを用意します。フォーマットは、上記「オリジナルの解析モデルの学習」にて用意した学習用コーパスと同じです。(コーパスのサイズはほんの数文でも構いません。必要なサイズは、再学習する対象や度合いによって変わってきます。)
+3. `train_one()` メソッドに、学習用の文を一つずつ与えます。
 
 ### モデルサイズの削減
 
-The model size could still be a problem for client-side distribution even after applying feature hashing.
-We included a script `scripts/minify.js` which applies feature quantization
-(see [Hagiwara and Sekine COLING 2014] for the details) to reduce the trained model size.
+モデルのサイズは (素性ハッシングを使用したとしても) 再配布してクライアント側で使用するにはまだ大きすぎることがあります。
+素性量子化を適用するスクリプト `scripts/minify.js` を使用して、学習したモデルのサイズを削減することができます
+(詳細については、論文 [Hagiwara and Sekine COLING 2014] を参照してください。)
 
-You can run it `node scripts/minify.js [input_model_file] [output_model_file]` to make a minified version of the model file.
-*Remember:* it also deletes the "sigma" part of the trained model, meaning that you are no longer able to re-train the minified model. If necessary, re-train the model first, then minify it.
+このスクリプトは、`node scripts/minify.js [入力モデルファイル] [出力モデルファイル]` として実行すると、minify されたモデルファイルを書き出します。*注意* このスクリプトは、学習された SCW の "sigma部" も削除してしまうため、一度 minify されたモデルを再学習することはできません。必要であれば、モデルを再学習した後、minify してください。
 
 ## API ドキュメント
 
-| Constructor                 | Description                                 |
+| コンストラクタ                 | 説明                                        |
 | ----------------------------| ------------------------------------------- |
-| `RakutenMA(model, phi, c)`    | Creates a new RakutenMA instance. `model` (optional) specifies the model object to initialize the RakutenMA instance with. `phi` and `c` (both optional) are hyper parameters of SCW (default: `phi = 2048`, `c = 0.003906`).  |
+| `RakutenMA(model, phi, c)`    | 新たな Rakuten MA のインスタンスを作成します。`model` (省略可) には、Rakuten MA のインスタンスを初期化する際にセットするモデルを指定します。`phi` と `c` (どちらも省略可) は、SCW のハイパーパラメータです。 (デフォルト値: `phi = 2048`, `c = 0.003906`).  |
 
 
-| Methods                     | Description                                 |
+| メソッド                     | 説明                                         |
 | ----------------------------| ------------------------------------------- |
-| `tokenize(input)`           | Tokenizes `input` (string) and returns tokenized result ([token, PoS tag] pairs).  |
-| `train_one(sent)`           | Updates the current model (if necessary) using the given answer `sent` ([token, PoS tag] pairs).  The return value is an object with three properties `ans`, `sys`, and `updated`, where `ans` is the given answer (same as `sent`), `sys` is the system output using the (old) model, and `updated` is a binary (True/False) flag meaning whether the model was updated (because `sys` was different from `ans`) or not.|
-| `set_model(model)`          | Sets the Rakuten MA instance's model to `model`. |
-| `set_tag_scheme(scheme)`    | Sets the sequential labeling tag scheme. Currently, `"IOB2"` and `"SBIEO"` are supported.  Specifying other tag schemes causes an exception. |
+| `tokenize(input)`           | `input` (string) をトークナイズし、結果 ([トークン, 品詞タグ] の配列)を返します。 |
+| `train_one(sent)`           | 現在のモデルを、与えられた正解 `sent` ([トークン, 品詞タグ] の配列) を用いて (必要に応じて) 更新します。返り値は、以下の３つのプロパティを持つオブジェクトです。`ans` は、与えられた正解で、`sent` と同一です。`sys` は、更新前のモデルを使って求められたシステムの出力です。`updated` は、`sys` と `ans` が異なるため、モデルが更新されたかどうかを示すブール値のフラグです。 |
+| `set_model(model)`          | Rakuten MA のインスタンスのモデルを `model` にセットします。 |
+| `set_tag_scheme(scheme)`    | 系列ラベリングのタグスキームを設定します。現在のところ、`"IOB2"` と `"SBIEO"` に対応しています。それ以外のスキームを設定すると例外が発生します。 |
 
-| Properties                  | Description                                 |
+| プロパティ                   | Description                                 |
 | ----------------------------| ------------------------------------------- |
-| `featset`                   | Specifies an array of feature templates (string) used for analysis. You can use `RakutenMA.default_featset_ja` and `RakutenMA.default_featset_zh` as the default feature sets for Japanese and Chinese, respectively. See below ("Supported feature templates") for the details of feature templates. |
-| `ctype_func`                | Specifies the function used to convert a character to its character type. `RakutenMA.ctype_ja_default_func` is the default character type function used for Japanese. Alternatively, you can call `RakutenMA.create_ctype_chardic_func(chardic)` to create a character type function which takes a character to look it up in `chardic` and return its value. (For example, `RakutenMA.create_ctype_chardic_func({"A": "type1"})` returns a function `f` where `f("A")` returns `"type1"` and `[]` otherwise.) |
-| `hash_func`                 | Specifies the hash function to use for feature hashing. Default = `undefined` (no feature hashing). A feature hashing function with `bit`-bit hash space can be created by calling `RakutenMA.create_hash_func(bit)`. |
+| `featset`                   | 解析に使われる素性テンプレート(文字列型) の配列を設定します。日本語と中国語のデフォルト素性セットについては、それぞれ `RakutenMA.default_featset_ja` と `RakutenMA.default_featset_zh` を使うことができます。素性テンプレートの詳細については、以下 「対応している素性テンプレート」を参照してください。 |
+| `ctype_func`                | 文字から文字種へと変換する関数を指定します。日本語のデフォルトの文字種関数は `RakutenMA.ctype_ja_default_func` です。もしくは、`RakutenMA.create_ctype_chardic_func(chardic)` を使い、文字種辞書 `chardic` を参照して文字種を返す関数を作成することができます。(例えば、`f = RakutenMA.create_ctype_chardic_func({"A": "type1"})` とすると、`f("A")` に対して `"type1"` を返し、それ以外には `[]` を返すような関数 `f` を作ることができます。)|
+| `hash_func`                 | 素性ハッシングに使うハッシュ関数を指定します。デフォルト値は `undefined` (素性ハッシングを使用しない) です。`RakutenMA.create_hash_func(bit)` とすると、`bit` ビットのハッシュサイズを持つ素性ハッシング関数を作ることができます。|
 
 
 ## 利用規約・ライセンス
 
-Distribution, modification, and academic/commercial use of Rakuten MA is permitted, provided that
-you conform with Apache License version 2.0 http://www.apache.org/licenses/LICENSE-2.0.html.
+Rakuten MA は Apache License version 2.0 http://www.apache.org/licenses/LICENSE-2.0.html の元で公開されています。
+本ライセンスに従う限り、Rakuten MA の再配布、変更、研究/商用利用は自由に行っていただいて構いません。
 
-If you are using Rakuten MA for research purposes, please cite our paper on Rakuten MA [Hagiwara and Sekine 2014]
-
+研究目的で Rakuten MA を使用する場合、Rakuten MA の論文 [Hagiwara and Sekine 2014] を引用してください。
 
 ## よくある質問
 
@@ -339,15 +337,13 @@ Q. Can we use the same model file in the JSON format for browsers?
 
 ## 謝辞
 
-The developers would like to thank Satoshi Sekine, Satoko Marumoto, Yoichi Yoshimoto, Keiji Shinzato, Keita Yaegashi, and Soh Masuko for
-their contribution to this project.
+本プロジェクトに対してご協力いただいた、関根 聡、丸元 聡子、吉本 陽一、新里 圭司、八重樫 恵太、益子 宗（敬称略）の各氏に感謝いたします。
 
 ## 参考文献
 
 Masato Hagiwara and Satoshi Sekine. Lightweight Client-Side Chinese/Japanese Morphological Analyzer Based on Online Learning. COLING 2014 Demo Session, pages 39-43, 2014. [[PDF](http://anthology.aclweb.org/C/C14/C14-2009.pdf)]
 
 Kikuo Maekawa. Compilation of the Kotonoha-BCCWJ corpus (in Japanese). Nihongo no kenkyu (Studies in Japanese), 4(1):82–95, 2008.
-(Some English information can be found [here](http://www2.ninjal.ac.jp/kikuo/Yonsei_KM20070129.pdf).) [[Site](http://www.ninjal.ac.jp/corpus_center/bccwj/)]
 
 Jialei Wang, Peilin Zhao, and Steven C. Hoi. Exact soft confidence-weighted learning. In Proc. of ICML 2012, pages 121–128, 2012. [[PDF](http://icml.cc/2012/papers/86.pdf)]
 
