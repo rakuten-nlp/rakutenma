@@ -8,7 +8,7 @@
  *
  * Rakuten MA is distributed under Apache License, version 2.0. http://www.apache.org/licenses/LICENSE-2.0
  *
- * (C) 2014 Rakuten NLP Project. All Rights Reserved.
+ * (C) 2014, 2015 Rakuten NLP Project. All Rights Reserved.
  */
 
 

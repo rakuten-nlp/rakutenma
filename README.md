@@ -250,7 +250,7 @@ Q. Can we use the same model file in the JSON format for browsers?
 | d1               | Character type bigram (t0 t+1)       |
 | d2               | Character type bigram (t+1 t+2)       |
 | d3               | Character type bigram (t+2 t+3)       |
-| others           | If you specify a customized feature function in the `featset` array, the function will be called with two arguments `_t` and `i`, where `_t` is a function which takes a position `j` and returns the character object at that position, and `i` is the current position. A character object is an object with two properties `c` and `t` which are character and character type, respectively. The return value of that function is used as the feature value. (For example, if you specify a function `f(_t, i)` which `returns _t[i].t;`, then it's returning the character type of the current position, which is basically the same as the template `c0`. )|
+| others           | If you specify a customized feature function in the `featset` array, the function will be called with two arguments `_t` and `i`, where `_t` is a function which takes a position `j` and returns the character object at that position, and `i` is the current position. A character object is an object with two properties `c` and `t` which are character and character type, respectively. The return value of that function is used as the feature value. (For example, if you specify a function `f(_t, i)` which `returns _t(i).t;`, then it's returning the character type of the current position, which is basically the same as the template `c0`. )|
 
 ### PoS tag list in Chinese
 
@@ -357,4 +357,4 @@ annotation of a large corpus. Natural Language Engineering, 11(2):207–238, 200
 
 ---
 
-&copy; 2014 Rakuten NLP Project. All Rights Reserved. / Sponsored by [Rakuten, Inc.](http://global.rakuten.com/corp/) and [Rakuten Institute of Technology](http://rit.rakuten.co.jp/).
+&copy; 2014, 2015 Rakuten NLP Project. All Rights Reserved. / Sponsored by [Rakuten, Inc.](http://global.rakuten.com/corp/) and [Rakuten Institute of Technology](http://rit.rakuten.co.jp/).

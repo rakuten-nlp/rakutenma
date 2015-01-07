@@ -173,7 +173,7 @@ Rakuten MA を npm パッケージとして使うこともできます。以下�
 | `set_model(model)`          | Rakuten MA のインスタンスのモデルを `model` にセットします。 |
 | `set_tag_scheme(scheme)`    | 系列ラベリングのタグスキームを設定します。現在のところ、`"IOB2"` と `"SBIEO"` に対応しています。それ以外のスキームを設定すると例外が発生します。 |
 
-| プロパティ                   | Description                                 |
+| プロパティ                   | 説明                                 |
 | ----------------------------| ------------------------------------------- |
 | `featset`                   | 解析に使われる素性テンプレート(文字列型) の配列を設定します。日本語と中国語のデフォルト素性セットについては、それぞれ `RakutenMA.default_featset_ja` と `RakutenMA.default_featset_zh` を使うことができます。素性テンプレートの詳細については、以下 「対応している素性テンプレート」を参照してください。 |
 | `ctype_func`                | 文字から文字種へと変換する関数を指定します。日本語のデフォルトの文字種関数は `RakutenMA.ctype_ja_default_func` です。もしくは、`RakutenMA.create_ctype_chardic_func(chardic)` を使い、文字種辞書 `chardic` を参照して文字種を返す関数を作成することができます。(例えば、`f = RakutenMA.create_ctype_chardic_func({"A": "type1"})` とすると、`f("A")` に対して `"type1"` を返し、それ以外には `[]` を返すような関数 `f` を作ることができます。)|
@@ -189,69 +189,71 @@ Rakuten MA は Apache License version 2.0 http://www.apache.org/licenses/LICENSE
 
 ## よくある質問
 
-Q. What are supported browsers and Node.js versions?
+Q. 対応しているブラウザと Node.js のバージョンは？
 
- - A. We confirmed that Rakuten MA runs in the following environments:
-  - Internet Explorer 8 (ver. 8.0.7601.17414 or above)
-  - Google Chrome (ver. 35.0.1916.153 or above)
-  - Firefox (ver. 16.0.2 or above)
-  - Safari (ver. 6.1.5 or above)
-  - Node.js (ver. 0.10.13 or above)
+ - A. Rakuten MA は、以下の環境で動作することを確認しています。
+  - Internet Explorer 8 (バージョン 8.0.7601.17414 以上)
+  - Google Chrome (バージョン 35.0.1916.153 以上)
+  - Firefox (バージョン 16.0.2 以上)
+  - Safari (バージョン 6.1.5 以上)
+  - Node.js (バージョン 0.10.13 以上)
 
-Q. Is commercial use permitted?
-- A. Yes, as long as you follow the terms and conditions. See "Terms and Conditions" above for the details.
+Q. 商用利用はできますか？
+- A. 利用規約・ライセンスに従う限り、商用利用は許可されています。詳細については、上記「利用規約・ライセンス」を参照してください。
 
-Q. I found a bug / analysis error / etc. Where should I report?
-- A. Please create an issue at Github issues https://github.com/rakuten-nlp/rakutenma/issues.
-- Alternatively, you can create a pull request if you modify the code. Rakuten MA has a test suite using Jasmine http://jasmine.github.io/. Please make sure all the tests pass (no errors after running `jasmine-node spec`) and write your own (if necessary) before submitting a pull request.
-- Finally, if your question is still not solved, please contact us at prj-rakutenma [at] mail.rakuten.com.
+Q. バグ・解析誤り・etc. を見つけました。どこに報告すれば良いですか？
+- A. Github issues https://github.com/rakuten-nlp/rakutenma/issues から issue を作成してください。
+- もしくは、コードを修正し、pull request を作成してください。Rakuten MA には、Jasmine http://jasmine.github.io/ を使ったテストスイートが付随しています。pull request を出す前に、全てのテストが通る (`jasmine-node spec` を実行した時にエラーが出ない) ことを確認し、必要であれば、追加のテストを書いてください。
+- それでも問題が解決しなければ、prj-rakutenma [at] mail.rakuten.com までお問い合わせください。
 
-Q. Tokenization results look strange (specifically, the sentence is split up to individual characters with no PoS tags)
-- A. Check if you are using the same feature set (`featset`) and the feature hashing function (`hash_func`) used for training. Remember to use 15-bit feature hashing function (`rma.hash_func = RakutenMA.create_hash_func(15);`) when using the bundled models (`model_zh.json` and `model_ja.json`).
+Q. 解析結果がおかしい (特に、１文字ごとにバラバラになってしまい、品詞タグが出力されない)
+- A. 学習した時と同じ素性セット (`featset`) と素性ハッシング関数 (`hash_func`) を正しく設定しているか確認してください。同梱のモデル (`model_ja.json` と `model_zh.json`) を使う場合、15ビットの素性ハッシング関数を必ず設定してください (`rma.hash_func = RakutenMA.create_hash_func(15);`)。
 
-Q. What scripts (Simplified/Traditional) are supported for Chinese?
-- A. Currently only simplified Chinese is supported.
+Q. 中国語のどの字体 (簡体字/繁体字) に対応していますか？
+- A. 現在、簡体字中国語のみに対応しています。
 
-Q. Can we use the same model file in the JSON format for browsers?
-- A. Yes and no. Although internal data structure of models is the same, you need to add assignment (e.g., `var model = [JSON representation];`) in order to refer to it on browsers. See the difference between `model_zh.json` (for Node.js) and `model_zh.js` (for browsers). There is a mini script `scripts/convert_for_browser.js` which does this for you. We recommend you work on Node.js for model training etc. and then convert it for browser uses.
+Q. JSON フォーマットの同じモデルファイルをブラウザ上でも使えますか？
+- A. はい。ただし、ブラウザ上で使う場合は、代入 (例: `var model = [JSON 表現];`) を追加する必要があります。 `model_ja.json` (Node.js用) と `model_ja.js` (ブラウザ用) の違いが参考になると思います。このように変換するスクリプト `scripts/convert_for_browser.js` を用意しました。通常は、モデルの学習などは Node.js 上で行い、ブラウザ上で使用するためにminify・変換するのがオススメです。
 
 ## 付録
 
 ### 対応している素性テンプレート
 
-| Feature template | Description                   |
+| 素性テンプレート    | 説明                           |
 | ---------------- | ----------------------------- |
-| w7               | Character unigram (c-3)       |
-| w8               | Character unigram (c-2)       |
-| w9               | Character unigram (c-1)       |
-| w0               | Character unigram (c0)        |
-| w1               | Character unigram (c+1)       |
-| w2               | Character unigram (c+2)       |
-| w3               | Character unigram (c+3)       |
-| c7               | Character type unigram (t-3)       |
-| c8               | Character type unigram (t-2)       |
-| c9               | Character type unigram (t-1)       |
-| c0               | Character type unigram (t0)        |
-| c1               | Character type unigram (t+1)       |
-| c2               | Character type unigram (t+2)       |
-| c3               | Character type unigram (t+3)       |
-| b7               | Character bigram (c-3 c-2)       |
-| b8               | Character bigram (c-2 c-1)       |
-| b9               | Character bigram (c-1 c0)       |
-| b1               | Character bigram (c0 c+1)       |
-| b2               | Character bigram (c+1 c+2)       |
-| b3               | Character bigram (c+2 c+3)       |
-| d7               | Character type bigram (t-3 t-2)       |
-| d8               | Character type bigram (t-2 t-1)       |
-| d9               | Character type bigram (t-1 t0)       |
-| d1               | Character type bigram (t0 t+1)       |
-| d2               | Character type bigram (t+1 t+2)       |
-| d3               | Character type bigram (t+2 t+3)       |
-| others           | If you specify a customized feature function in the `featset` array, the function will be called with two arguments `_t` and `i`, where `_t` is a function which takes a position `j` and returns the character object at that position, and `i` is the current position. A character object is an object with two properties `c` and `t` which are character and character type, respectively. The return value of that function is used as the feature value. (For example, if you specify a function `f(_t, i)` which `returns _t[i].t;`, then it's returning the character type of the current position, which is basically the same as the template `c0`. )|
+| w7               | 文字ユニグラム (c-3)       |
+| w8               | 文字ユニグラム (c-2)       |
+| w9               | 文字ユニグラム (c-1)       |
+| w0               | 文字ユニグラム (c0)        |
+| w1               | 文字ユニグラム (c+1)       |
+| w2               | 文字ユニグラム (c+2)       |
+| w3               | 文字ユニグラム (c+3)       |
+| c7               | 文字種ユニグラム (t-3)       |
+| c8               | 文字種ユニグラム (t-2)       |
+| c9               | 文字種ユニグラム (t-1)       |
+| c0               | 文字種ユニグラム (t0)        |
+| c1               | 文字種ユニグラム (t+1)       |
+| c2               | 文字種ユニグラム (t+2)       |
+| c3               | 文字種ユニグラム (t+3)       |
+| b7               | 文字バイグラム (c-3 c-2)       |
+| b8               | 文字バイグラム (c-2 c-1)       |
+| b9               | 文字バイグラム (c-1 c0)       |
+| b1               | 文字バイグラム (c0 c+1)       |
+| b2               | 文字バイグラム (c+1 c+2)       |
+| b3               | 文字バイグラム (c+2 c+3)       |
+| d7               | 文字種バイグラム (t-3 t-2)       |
+| d8               | 文字種バイグラム (t-2 t-1)       |
+| d9               | 文字種バイグラム (t-1 t0)       |
+| d1               | 文字種バイグラム (t0 t+1)       |
+| d2               | 文字種バイグラム (t+1 t+2)       |
+| d3               | 文字種バイグラム (t+2 t+3)       |
+| その他            | `featset` の配列に文字列ではなく関数 `f` を含めた場合、その関数は各文字ごとに２つの引数、`_t` と `i` とともに呼ばれます。ここで、`_t` は、位置 `j` を与えるとその位置の文字オブジェクトを返す関数であり、`i` は現在の位置を表します。文字オブジェクトには、`c` (文字) と `t` (文字種) の２つのプロパティがあります。この関数 `f` の戻り値が、素性の値として使われます。(例えば、中身が `returns _t(i).t;` だけの関数 `f(_t, i)` を指定した場合、それは現在位置の文字種を返していることになり、素性テンプレート `c0` と同等になります。)|
 
-### PoS tag list in Chinese
+### 中国語品詞リスト
 
-| Tag  | Description      |
+説明については、Chinese Treebank の英語表記そのままです。
+
+| タグ  | 説明      |
 | ---  | ---------------- |
 | AD   | Adverb           |
 | AS   | Aspect Particle  |
@@ -292,48 +294,48 @@ Q. Can we use the same model file in the JSON format for browsers?
 | VV   | Other verb |
 | X    | Others |
 
-### PoS tag list in Japanese and correspondence to BCCWJ tags
+### 日本語品詞リストと対応する BCCWJ の品詞名
 
-| Tag  | Original JA name | English             |
-| ---  | ---------------- | ------------------  |
-| A-c  | 形容詞-一般       | Adjective-Common    |
-| A-dp | 形容詞-非自立可能  | Adjective-Dependent |
-| C    | 接続詞            | Conjunction         |
-| D    | 代名詞            | Pronoun             |
-| E    | 英単語            | English word        |
-| F    | 副詞              | Adverb              |
-| I-c  | 感動詞-一般        | Interjection-Common |
-| J-c  | 形状詞-一般        | Adjectival Noun-Common |
-| J-tari | 形状詞-タリ      | Adjectival Noun-Tari |
-| J-xs | 形状詞-助動詞語幹   | Adjectival Noun-AuxVerb stem |
-| M-aa | 補助記号-AA        | Auxiliary sign-AA |
-| M-c  | 補助記号-一般      | Auxiliary sign-Common |
-| M-cp | 補助記号-括弧閉    | Auxiliary sign-Open Parenthesis |
-| M-op | 補助記号-括弧開    | Auxiliary sign-Close Parenthesis |
-| M-p  | 補助記号-句点      | Auxiliary sign-Period |
-| N-n  | 名詞-名詞的        | Noun-Noun |
-| N-nc | 名詞-普通名詞      | Noun-Common Noun |
-| N-pn | 名詞-固有名詞      | Noun-Proper Noun |
-| N-xs | 名詞-助動詞語幹    | Noun-AuxVerb stem |
-| O    | その他            | Others            |
-| P    | 接頭辞             | Prefix |
-| P-fj | 助詞-副助詞        | Particle-Adverbial |
-| P-jj | 助詞-準体助詞      | Particle-Phrasal |
-| P-k  | 助詞-格助詞        | Particle-Case Marking |
-| P-rj | 助詞-係助詞        | Particle-Binding |
-| P-sj | 助詞-接続助詞      | Particle-Conjunctive |
-| Q-a  | 接尾辞-形容詞的    | Suffix-Adjective |
-| Q-j  | 接尾辞-形状詞的    | Suffix-Adjectival Noun |
-| Q-n  | 接尾辞-名詞的      | Suffix-Noun |
-| Q-v  | 接尾辞-動詞的      | Suffix-Verb |
-| R    | 連体詞            | Adnominal adjective |
-| S-c  | 記号-一般         | Sign-Common |
-| S-l  | 記号-文字         | Sign-Letter  |
-| U    | URL              | URL         |
-| V-c  | 動詞-一般         | Verb-Common |
-| V-dp | 動詞-非自立可能    | Verb-Dependent |
-| W    | 空白              | Whitespace |
-| X    | 助動詞            | AuxVerb |
+| タグ  | 対応する BCCWJ 品詞名 |
+| ---  | ---------------- |
+| A-c  | 形容詞-一般       |
+| A-dp | 形容詞-非自立可能  |
+| C    | 接続詞            |
+| D    | 代名詞            |
+| E    | 英単語            |
+| F    | 副詞              |
+| I-c  | 感動詞-一般        |
+| J-c  | 形状詞-一般        |
+| J-tari | 形状詞-タリ      |
+| J-xs | 形状詞-助動詞語幹   |
+| M-aa | 補助記号-AA        |
+| M-c  | 補助記号-一般      |
+| M-cp | 補助記号-括弧閉    |
+| M-op | 補助記号-括弧開    |
+| M-p  | 補助記号-句点      |
+| N-n  | 名詞-名詞的        |
+| N-nc | 名詞-普通名詞      |
+| N-pn | 名詞-固有名詞      |
+| N-xs | 名詞-助動詞語幹    |
+| O    | その他            |
+| P    | 接頭辞             |
+| P-fj | 助詞-副助詞        |
+| P-jj | 助詞-準体助詞      |
+| P-k  | 助詞-格助詞        |
+| P-rj | 助詞-係助詞        |
+| P-sj | 助詞-接続助詞      |
+| Q-a  | 接尾辞-形容詞的    |
+| Q-j  | 接尾辞-形状詞的    |
+| Q-n  | 接尾辞-名詞的      |
+| Q-v  | 接尾辞-動詞的      |
+| R    | 連体詞            |
+| S-c  | 記号-一般         |
+| S-l  | 記号-文字         |
+| U    | URL              |
+| V-c  | 動詞-一般         |
+| V-dp | 動詞-非自立可能    |
+| W    | 空白              |
+| X    | 助動詞            |
 
 ## 謝辞
 
@@ -352,4 +354,4 @@ annotation of a large corpus. Natural Language Engineering, 11(2):207–238, 200
 
 ---
 
-&copy; 2014 Rakuten NLP Project. All Rights Reserved. / Sponsored by [Rakuten, Inc.](http://global.rakuten.com/corp/) and [Rakuten Institute of Technology](http://rit.rakuten.co.jp/).
+&copy; 2014, 2015 Rakuten NLP Project. All Rights Reserved. / Sponsored by [Rakuten, Inc.](http://global.rakuten.com/corp/) and [Rakuten Institute of Technology](http://rit.rakuten.co.jp/).
