@@ -1,4 +1,4 @@
-# Rakuten MA ![Rakuten MA Logo](https://raw.githubusercontent.com/rakuten-nlp/rakutenma/master/rakutenma_logo.png)
+# ![Rakuten MA](https://raw.githubusercontent.com/rakuten-nlp/rakutenma/master/rakutenma_logo.png "Rakuten MA")
 
 [Japanese README (日本語ドキュメント)](https://github.com/rakuten-nlp/rakutenma/blob/master/README-ja.md)
 
