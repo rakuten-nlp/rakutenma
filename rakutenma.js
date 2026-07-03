@@ -220,17 +220,23 @@ RakutenMA.prototype.decode = function (csent) {
   var weights = this.model.mu || {};
   var trans = weights.t || t_def;
 
-  var statesp = {}; statesp[RakutenMA._BEOS_LABEL] = {score: 0.0, path: [RakutenMA._BEOS_LABEL]};
+  // Use backpointers instead of copying the full path at every step.
+  // statesp[label] = { score, back } where back is the previous label.
+  var statesp = {}; statesp[RakutenMA._BEOS_LABEL] = {score: 0.0, back: null};
+
+  // backpointers[i][label] = the best predecessor label at step i
+  var backpointers = [];
 
   var states0 = undefined;
 
   var i, sp, s0;
   var max_score, max_state, states0_score, trans0, score;
-  var final_path;
 
   for (i = 1; i < csent.length; i ++) {
 
     states0 = this.calc_states0(csent[i].f, weights, e_def);
+    var bp_i = {};
+
     for (s0 in states0) {
       max_score = -Infinity;
       max_state = undefined;
@@ -249,17 +255,28 @@ RakutenMA.prototype.decode = function (csent) {
         }
       }
 
-      if (max_state && max_score > 0)
-        states0[s0] = {score: max_score, path: statesp[max_state].path.concat([s0])};
-
+      if (max_state && max_score > 0) {
+        states0[s0] = {score: max_score, back: max_state};
+        bp_i[s0] = max_state;
+      }
     }
+
+    backpointers.push(bp_i);
     statesp = states0;
   }
 
-  // track the path and assign to csent[i].l
-  final_path = statesp[RakutenMA._BEOS_LABEL].path || {};
-  for (i = 0; i < csent.length; i ++) {
-    csent[i].l = final_path[i] || RakutenMA._DEF_LABEL;
+  // Traceback: follow backpointers from the EOS state to recover the label sequence.
+  var final_labels = new Array(csent.length);
+  var cur_label = RakutenMA._BEOS_LABEL;
+  for (i = csent.length - 1; i >= 1; i--) {
+    final_labels[i] = cur_label;
+    var bp = backpointers[i - 1];
+    cur_label = (bp && bp[cur_label]) ? bp[cur_label] : RakutenMA._DEF_LABEL;
+  }
+  final_labels[0] = cur_label;
+
+  for (i = 0; i < csent.length; i++) {
+    csent[i].l = final_labels[i] || RakutenMA._DEF_LABEL;
   }
 };
 
